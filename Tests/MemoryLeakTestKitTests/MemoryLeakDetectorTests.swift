@@ -160,6 +160,28 @@ class MemoryLeakDetectorTests: XCTestCase {
                     ]
                 )
             ),
+            #line: ( // No circular references but outer owner exists
+                build: { () -> Node in
+                    let node = Node(linkedNodes: [])
+
+                    ReferenceOwner.global.own(node)
+
+                    return Node(linkedNodes: [node])
+                },
+                expected: MemoryLeakReport(
+                    leakedObjects: [
+                        LeakedObject(
+                            objectDescription: "Node",
+                            typeName: TypeName(text: "Node"),
+                            location: ReferencePath(components: [
+                                .label("linkedNodes"),
+                                .index(0),
+                            ]),
+                            circularPaths: []
+                        )
+                    ]
+                )
+            ),
     	]
 
     	testCases.forEach { tuple in
@@ -215,6 +237,21 @@ class MemoryLeakDetectorTests: XCTestCase {
         var description: String {
             return "LazyCircularNode"
         }
+    }
+
+
+
+    public final class ReferenceOwner {
+        private var owned: [Any] = []
+        private init() {}
+
+
+        public func own(_ any: Any) {
+            self.owned.append(any)
+        }
+
+
+        public static let global = ReferenceOwner()
     }
 
 

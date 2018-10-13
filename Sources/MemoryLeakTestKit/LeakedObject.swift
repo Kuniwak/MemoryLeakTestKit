@@ -41,6 +41,15 @@ public struct LeakedObject: Hashable {
 
 extension LeakedObject: PrettyPrintable {
     public var descriptionLines: [IndentedLine] {
+        guard !self.circularPaths.isEmpty else {
+            return descriptionList([
+                (label: "Description", description: self.objectDescription),
+                (label: "Type", description: self.typeName.text),
+                (label: "Location", description: self.location.description),
+                (label: "Circular Paths", description: "No circular references found. Probably some outer instances own it.")
+            ])
+        }
+
         return descriptionList([
             (label: "Description", description: self.objectDescription),
             (label: "Type", description: self.typeName.text),
