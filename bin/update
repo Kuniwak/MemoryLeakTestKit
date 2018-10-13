@@ -1,0 +1,15 @@
+#!/bin/bash -eu
+set -o pipefail
+
+
+ROOT_DIR="$(cd "$(dirname "$0")/.."; pwd)"
+BIN_DIR="${ROOT_DIR}/bin"
+GYB="${BIN_DIR}/gyb/gyb"
+
+SOURCE_DIR="${ROOT_DIR}/Sources"
+
+
+for gyb_file in $(find "${SOURCE_DIR}" -name "*.gyb"); do
+	out_file="$(dirname "${gyb_file}")/$(basename -s ".swift.gyb" "${gyb_file}").generated.swift"
+	"${GYB}" "${gyb_file}" -o "${out_file}" --line-directive=""
+done
