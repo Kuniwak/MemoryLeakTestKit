@@ -1,14 +1,14 @@
 public struct LeakedObject: Hashable {
     public let objectDescription: String
     public let typeName: TypeName
-    public let location: ReferencePath?
+    public let location: ReferencePath
     public let circularPaths: Set<CircularReferencePath>
 
 
     public init(
         objectDescription: String,
         typeName: TypeName,
-        location: ReferencePath?,
+        location: ReferencePath,
         circularPaths: Set<CircularReferencePath>
     ) {
         self.objectDescription = objectDescription
@@ -44,7 +44,7 @@ extension LeakedObject: PrettyPrintable {
         return descriptionList([
             (label: "Description", description: self.objectDescription),
             (label: "Type", description: self.typeName.text),
-            (label: "Location", description: self.location?.description ?? "(N/A)"),
+            (label: "Location", description: self.location.description),
             (label: "Circular Paths", description: "")
         ]) + indent(lines(self.circularPaths.map { $0.description }))
     }
