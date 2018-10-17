@@ -168,4 +168,10 @@ class ReferencePathNormalizationTests: XCTestCase {
             (name: "Actual", body: lines(b.map { $0.description })),
         ])))
     }
+
+
+    static let allTests: [(String, (ReferencePathNormalizationTests) -> () throws -> Void)] = [
+        ("testNormalize", testNormalize),
+        ("testHint", testHint),
+    ]
 }

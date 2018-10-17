@@ -42,4 +42,9 @@ class ReferenceIDTests: XCTestCase {
 			XCTAssertEqual(a == b, expected, line: line)
     	}
     }
+
+
+    static let allTests: [(String, (ReferenceIDTests) -> () throws -> Void)] = [
+        ("testEquatable", testEquatable),
+    ]
 }
