@@ -163,6 +163,29 @@ class MemoryLeakDetectorTests: XCTestCase {
             #line: ( // No circular references but outer owner exists
                 build: { () -> Node in
                     let node = Node(linkedNodes: [])
+                    var anonymous: (() -> Void)?
+
+                    anonymous = {
+                        _ = node
+                        anonymous!()
+                    }
+
+                    return node
+                },
+                expected: MemoryLeakReport(
+                    leakedObjects: [
+                        LeakedObject(
+                            objectDescription: "Node",
+                            typeName: TypeName(text: "Node"),
+                            location: ReferencePath.root,
+                            circularPaths: []
+                        )
+                    ]
+                )
+            ),
+            #line: ( // Circular references but anonymous instances at end
+                build: { () -> Node in
+                    let node = Node(linkedNodes: [])
 
                     ReferenceOwner.global.own(node)
 

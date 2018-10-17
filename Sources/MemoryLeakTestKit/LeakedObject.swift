@@ -41,13 +41,17 @@ public struct LeakedObject: Hashable {
 
 extension LeakedObject: PrettyPrintable {
     public var descriptionLines: [IndentedLine] {
-        guard !self.circularPaths.isEmpty else {
-            return descriptionList([
-                (label: "Description", description: self.objectDescription),
-                (label: "Type", description: self.typeName.text),
-                (label: "Location", description: self.location.description),
-                (label: "Circular Paths", description: "No circular references found. Probably some outer instances own it.")
-            ])
+        let circularPathsDescription: [IndentedLine]
+
+        if self.circularPaths.isEmpty {
+            circularPathsDescription = lines(["No circular references found. There are 2 possible reasons:"])
+                + indent(lines([
+                    "1. Some outer instances own it",
+                    "2. Anonymous instances that are on circular references end own it",
+                ]))
+        }
+        else {
+            circularPathsDescription = indent(lines(self.circularPaths.map { $0.description }))
         }
 
         return descriptionList([
@@ -55,6 +59,6 @@ extension LeakedObject: PrettyPrintable {
             (label: "Type", description: self.typeName.text),
             (label: "Location", description: self.location.description),
             (label: "Circular Paths", description: "")
-        ]) + indent(lines(self.circularPaths.map { $0.description }))
+        ]) + circularPathsDescription
     }
 }
