@@ -3,9 +3,7 @@ import Foundation
 
 
 public func detectLeaks<T>(by build: () -> T) -> MemoryLeakReport {
-    let releasedWeakMap = autoreleasepool { () -> [ReferenceID: Reference] in
-        return createWeakMap(from: build())
-    }
+    let releasedWeakMap = createWeakMap(from: build())
 
     return MemoryLeakReport(references: releasedWeakMap.values)
 }
@@ -14,9 +12,7 @@ public func detectLeaks<T>(by build: () -> T) -> MemoryLeakReport {
 
 public func detectLeaks<T>(by build: (@escaping (T) -> Void) -> Void, _ callback: @escaping (MemoryLeakReport) -> Void) {
     build { target in
-        let releasedWeakMap = autoreleasepool { () -> [ReferenceID: Reference] in
-            return createWeakMap(from: target)
-        }
+        let releasedWeakMap = createWeakMap(from: target)
 
         callback(MemoryLeakReport(references: releasedWeakMap.values))
     }

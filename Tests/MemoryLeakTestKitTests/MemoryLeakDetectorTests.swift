@@ -291,4 +291,9 @@ class MemoryLeakDetectorTests: XCTestCase {
             (name: "Extra leaked objects", body: extraLeakedObjects),
         ])))
     }
+
+
+    static let allTests: [(String, (MemoryLeakDetectorTests) -> () throws -> Void)] = [
+        ("testMemoryLeak", testMemoryLeak),
+    ]
 }
