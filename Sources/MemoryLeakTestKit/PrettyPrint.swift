@@ -5,7 +5,7 @@ public protocol PrettyPrintable {
 
 
 extension PrettyPrintable {
-    var prettyDescription: String {
+    public var prettyDescription: String {
         return format(self.descriptionLines)
     }
 }
