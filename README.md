@@ -24,9 +24,12 @@ This library is under development.
 ```swift
 import MemoryLeakTestKit
 
-let target = createSomething()
 
-let memoryLeaks = detectLeaks(target)
+let memoryLeaks = detectLeaks {
+    // Create a instance
+    return target
+}
+
 XCTAssertTrue(
     memoryLeaks.leakedObjects.isEmpty,
     memoryLeaks.prettyDescription
